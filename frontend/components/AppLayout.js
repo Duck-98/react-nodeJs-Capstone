@@ -4,9 +4,10 @@ import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import { useSeletor } from "react-redux";
 
 const AppLayout = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const isLogin = useSeletor((state) => state.user.isLogin);
   return (
     <div>
       <Menu mode="horizontal">
@@ -31,11 +32,7 @@ const AppLayout = ({ children }) => {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLogin ? (
-            <UserProfile setIsLogin={setIsLogin} />
-          ) : (
-            <LoginForm setIsLogin={setIsLogin} />
-          )}
+          {isLogin ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={6}>
           {children}
