@@ -1,7 +1,10 @@
-import React from "react";
-import { Avatar, Card } from "antd";
+import React, { useCallback } from "react";
+import { Avatar, Card, Button } from "antd";
 
-const UserProfile = () => {
+const UserProfile = ({ setIsLogin }) => {
+  const onLogOut = useCallback(() => {
+    setIsLogin(false);
+  }, []);
   return (
     <Card
       actions={[
@@ -19,7 +22,7 @@ const UserProfile = () => {
       ]}
     >
       <Card.Meta avatar={<Avatar>Duck</Avatar>} title="Taxi-Pod" />
-      <Button>로그아웃</Button>
+      <Button onClick={onLogOut}>로그아웃</Button>
     </Card>
   );
 };

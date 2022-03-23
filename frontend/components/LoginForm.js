@@ -1,23 +1,28 @@
+import PropTypes from "prop-types";
 import React, { useCallback, useState } from "react";
 import { Form, Input, Button } from "antd";
 import Link from "next/link";
+import styled from "styled-components";
+import useInput from "../hooks/useInput";
+
+const ButtonWrapper = styled.div`
+  margin-top: 10px;
+`;
+const FormWrapper = styled(Form)`
+  padding: 10px;
+`;
 
 const LoginForm = ({ setIsLogin }) => {
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const onChangeId = useCallback(() => {
-    setId(e.target.value);
-  }, []);
-  const onChangePassword = useCallback(() => {
-    setPassword(e.target.value);
-  }, []);
+  const [id, onChangeId] = useInput("");
+  const [password, onChangePassword] = useInput("");
+
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
     setIsLogin(true);
   }, [id, password]);
   return (
     <>
-      <Form onFinish={onSubmitForm}>
+      <FormWrapper onFinish={onSubmitForm}>
         <div>
           <label htmlFor="user-id">아이디</label>
           <br />
@@ -36,16 +41,22 @@ const LoginForm = ({ setIsLogin }) => {
         </div>
 
         <div>
-          <Button type="primary" loading={false}>
-            로그인
-          </Button>
-          <Link href="/sign">
-            <Button>회원가입</Button>
-          </Link>
+          <ButtonWrapper>
+            <Button type="primary" htmlType="submit" loading={false}>
+              로그인
+            </Button>
+            <Link href="/signup">
+              <Button>회원가입</Button>
+            </Link>
+          </ButtonWrapper>
         </div>
-      </Form>
+      </FormWrapper>
     </>
   );
+};
+
+LoginForm.propTypes = {
+  setIsLogin: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
