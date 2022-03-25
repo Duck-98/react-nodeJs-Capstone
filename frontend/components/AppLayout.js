@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
-import { useSeletor } from "react-redux";
+import { useSelector } from "react-redux";
 
 const AppLayout = ({ children }) => {
-  const isLogin = useSeletor((state) => state.user.isLogin);
+  const isLogin = useSelector((state) => state.user.isLogin);
   return (
     <div>
       <Menu mode="horizontal">
