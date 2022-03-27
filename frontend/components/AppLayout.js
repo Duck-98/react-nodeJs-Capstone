@@ -7,7 +7,7 @@ import LoginForm from "./LoginForm";
 import { useSelector } from "react-redux";
 
 const AppLayout = ({ children }) => {
-  const isLogin = useSelector((state) => state.user.isLogin);
+  const { isLogin } = useSelector((state) => state.user);
   return (
     <div>
       <Menu mode="horizontal">

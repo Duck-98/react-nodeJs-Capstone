@@ -5,7 +5,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
 import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers";
+import { loginAction } from "../reducers/user";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -22,7 +22,7 @@ const LoginForm = () => {
 
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
-    dispatch(loginAction());
+    dispatch(loginAction({ id, password }));
   }, [id, password]);
   return (
     <>
@@ -30,7 +30,7 @@ const LoginForm = () => {
         <div>
           <label htmlFor="user-id">아이디</label>
           <br />
-          <input name="user-id" value={id} onChange={onChangeId} required />
+          <Input name="user-id" value={id} onChange={onChangeId} required />
         </div>
 
         <div>
