@@ -3,13 +3,26 @@ import { Form, Input, Button } from "antd";
 import useInput from "../hooks/useInput";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-
+import { ADD_COMMENT_REQUEST } from "../reducers/post";
+import { dispatch } from "react-redux";
 const CommentForm = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
-  const [commentText, onChangeCommentText] = useInput("");
+  const { addCommentDone } = useSelector((state) => state.post);
+  const [commentText, onChangeCommentText, setCommentText] = useInput("");
+
+  useEffect(() => {
+    // addPostDone이 실행되면  setText가 공백이 되게 해줌.
+    if (addCommentDone) {
+      setCommentText("");
+    }
+  }, [addCommentDone]);
   const onSubmitComment = useCallback(() => {
     console.log(post.id, commentText);
-  }, [commentText]);
+    dispatch({
+      type: ADD_COMMENT_REQUEST,
+      data: { content: commentText, postId: post.id, userId, id },
+    });
+  }, [commentText, id]);
   return (
     <Form onFinish={onSubmitComment}>
       <Form.Item style={{ position: "relative", margin: 0 }}>

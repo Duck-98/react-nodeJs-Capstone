@@ -1,20 +1,25 @@
 import { Form, Input, Button } from "antd";
-import react, { useCallback, useRef, useState } from "react";
+import react, { useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useInput from "../hooks/useInput";
 import { addPost } from "../reducers/post";
 
 const PostForm = () => {
-  const { imagePaths } = useSelector((state) => state.post);
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
-  const imageInput = useRef();
-  const [text, setText] = useState("");
 
-  const onChangeText = useCallback((e) => {
-    setText(e.target.value);
-  }, []);
+  const [text, onChangeText, setText] = useInput("");
+  useEffect(() => {
+    // addPostDone이 실행되면  setText가 공백이 되게 해줌.
+    if (addPostDone) {
+      setText("");
+    }
+  }, [addPostDone]);
   const onSubmit = useCallback(() => {
-    dispatch(addPost);
-  }, []);
+    dispatch(addPost(text));
+  }, [text]);
+
+  const imageInput = useRef();
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();

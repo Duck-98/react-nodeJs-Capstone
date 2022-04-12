@@ -3,7 +3,7 @@
         "ecmaVersion": 2022,
         "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": true,
+            "jsx": true
         }
     },
     "env": {
