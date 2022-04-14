@@ -11,6 +11,10 @@ export const initialState = {
   signUpDone: false,
   signUpError: null,
 
+  changeNicknameLoading: false, // 회원가입 시도중
+  changeNicknameDone: false,
+  changeNicknameError: null,
+
   me: null,
   signUpData: {},
   loginData: {},
@@ -27,6 +31,10 @@ const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
+const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
+const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
 
 const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
@@ -45,18 +53,14 @@ const dummyUser = (data) => ({
   Followers: [],
 });
 
-export const loginRequestAction = (data) => {
-  return {
-    type: LOG_IN_REQUEST,
-    data,
-  };
-};
+export const loginRequestAction = (data) => ({
+  type: LOG_IN_REQUEST,
+  data,
+});
 
-export const logoutRequestAction = () => {
-  return {
-    type: LOG_OUT_REQUEST,
-  };
-};
+export const logoutRequestAction = () => ({
+  type: LOG_OUT_REQUEST,
+});
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOG_IN_REQUEST:
@@ -117,6 +121,25 @@ const reducer = (state = initialState, action) => {
         ...state,
         signUpLoading: false,
         signUpError: action.error,
+      };
+    case CHANGE_NICKNAME_REQUEST:
+      return {
+        ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null,
+      };
+    case CHANGE_NICKNAME_SUCCESS:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true,
+      };
+    case CHANGE_NICKNAME_FAILURE:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error,
       };
     default:
       return state;
