@@ -1,56 +1,69 @@
 export const initialState = {
+  followLoading: false, // 팔로우 시도중
+  followDone: false,
+  followError: null,
+  unfollowLoading: false, // 언팔로우 시도중
+  unfollowDone: false,
+  unfollowError: null,
   logInLoading: false, // 로그인 시도중
   logInDone: false,
   logInError: null,
-
-  logOutLoading: false, // 로그아웃 시도중.
+  logOutLoading: false, // 로그아웃 시도중
   logOutDone: false,
   logOutError: null,
-
   signUpLoading: false, // 회원가입 시도중
   signUpDone: false,
   signUpError: null,
-
-  changeNicknameLoading: false, // 회원가입 시도중
+  changeNicknameLoading: false, // 닉네임 변경 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
-
   me: null,
   signUpData: {},
   loginData: {},
 };
 
-const LOG_IN_REQUEST = "LOG_IN_REQUEST";
-const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
-const LOG_IN_FAILURE = "LOG_IN_FAILURE";
+export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
+export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
+export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
 
-const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
-const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
-const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
+export const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
+export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
+export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 
-const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
-const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
-const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
+export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 
-const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
-const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
-const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
+export const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
+export const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
+export const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
 
-const FOLLOW_REQUEST = "FOLLOW_REQUEST";
-const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
-const FOLLOW_FAILURE = "FOLLOW_FAILURE";
+export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
+export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
+export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
 
-const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
-const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
-const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
+export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
+export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
+export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
+
+export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
+export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
 
 const dummyUser = (data) => ({
   ...data,
-  nickname: "duck",
+  nickname: "제로초",
   id: 1,
-  Posts: [],
-  Followings: [],
-  Followers: [],
+  Posts: [{ id: 1 }],
+  Followings: [
+    { nickname: "부기초" },
+    { nickname: "Chanho Lee" },
+    { nickname: "neue zeal" },
+  ],
+  Followers: [
+    { nickname: "부기초" },
+    { nickname: "Chanho Lee" },
+    { nickname: "neue zeal" },
+  ],
 });
 
 export const loginRequestAction = (data) => ({
@@ -64,6 +77,7 @@ export const logoutRequestAction = () => ({
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case LOG_IN_REQUEST:
+      console.log("reduce logIn");
       return {
         ...state,
         logInLoading: true,
