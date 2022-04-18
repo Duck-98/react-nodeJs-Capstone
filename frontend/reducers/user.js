@@ -155,6 +155,10 @@ const reducer = (state = initialState, action) => {
         changeNicknameLoading: false,
         changeNicknameError: action.error,
       };
+    case ADD_POST_TO_ME:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

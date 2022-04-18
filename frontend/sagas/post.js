@@ -17,6 +17,8 @@ import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
 } from "../reducers/post";
+import { ADD_POST_TO_ME } from "../reducers/user";
+import shortid from "shortid";
 
 function addPostAPI(data) {
   return axios.post("/api/addPost", data);
@@ -26,9 +28,17 @@ function* addPost(action) {
   try {
     //const result = yield call(addPostAPI);
     yield delay(1000);
+    const id = shortid.generate();
     yield put({
       type: ADD_POST_SUCCESS,
-      data: action.data,
+      data: {
+        id,
+        content: action.data,
+      },
+    });
+    yield put({
+      type: ADD_POST_TO_ME,
+      data: id,
     });
   } catch (err) {
     yield put({
