@@ -3,7 +3,7 @@ import react, { useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
 import { addPost } from "../reducers/post";
-
+import { ADD_POST_REQUEST } from "../reducers/post";
 const PostForm = () => {
   const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
@@ -15,8 +15,11 @@ const PostForm = () => {
       setText("");
     }
   }, [addPostDone]);
-  const onSubmit = useCallback(() => {
-    dispatch(addPost(text));
+  const onSubmitForm = useCallback(() => {
+    dispatch({
+      type: ADD_POST_REQUEST,
+      data: text,
+    });
   }, [text]);
 
   const imageInput = useRef();
@@ -29,7 +32,7 @@ const PostForm = () => {
     <Form
       style={{ margin: "10px 8 20px" }}
       encType="multipart/form-data"
-      onFinish={onSubmit}
+      onFinish={onSubmitForm}
     >
       <Input.TextArea
         value={text}
