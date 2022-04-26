@@ -48,6 +48,10 @@ export const initialState = {
   addPostDone: false,
   addPostError: null,
 
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -56,6 +60,10 @@ export const initialState = {
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+
+export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
+export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
+export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
@@ -114,8 +122,34 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_FAILURE: {
       return {
         ...state,
-        addCommentLoading: false,
-        addCommentError: action.error,
+        addPostLoading: false,
+        addPostError: action.error,
+      };
+    }
+
+    case REMOVE_POST_REQUEST: {
+      return {
+        ...state,
+        removePostLoading: true,
+        removePostDone: false,
+        removePostError: null,
+      };
+    }
+
+    case REMOVE_POST_SUCCESS: {
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter((v) => v.id !== action.data),
+        removePostLoading: false,
+        removePostDone: true,
+      };
+    }
+
+    case REMOVE_POST_FAILURE: {
+      return {
+        ...state,
+        removePostLoading: false,
+        removePostError: action.error,
       };
     }
 

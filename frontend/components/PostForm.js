@@ -15,13 +15,13 @@ const PostForm = () => {
       setText("");
     }
   }, [addPostDone]);
+
   const onSubmitForm = useCallback(() => {
     dispatch({
       type: ADD_POST_REQUEST,
-      data: { text },
+      data: text,
     });
   }, [text]);
-
   const imageInput = useRef();
 
   const onClickImageUpload = useCallback(() => {
