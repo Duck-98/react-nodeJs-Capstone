@@ -1,5 +1,7 @@
 import shortId from "shortid";
 import produce from "immer";
+import faker from "faker";
+
 export const initialState = {
   mainPosts: [
     {
@@ -56,6 +58,34 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
+//concat() 메서드는 인자로 주어진 배열이나 값들을 기존 배열에 합쳐서 새 배열을 반환합니다.
+
+initialState.mainPosts = initialState.mainPosts.concat(
+  Array(20)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          src: faker.image.image(),
+        },
+      ],
+      Comment: [
+        {
+          User: {
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
+          },
+          content: faker.lorem.sentence(),
+        },
+      ],
+    })),
+);
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
