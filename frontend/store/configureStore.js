@@ -6,23 +6,16 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from "../reducers";
 import rootSaga from "../sagas";
 
-const loggerMiddleware =
-  ({ dispatch, getState }) =>
-  (next) =>
-  (action) => {
-    console.log(action);
-    return next(action);
-  };
-
-const configureStore = () => {
-  const sagaMiddlewares = createSagaMiddleware();
-  const middlewares = [sagaMiddlewares, loggerMiddleware];
+const configureStore = (context) => {
+  console.log(context);
+  const sagaMiddleware = createSagaMiddleware();
+  const middlewares = [sagaMiddleware];
   const enhancer =
     process.env.NODE_ENV === "production"
-      ? compose(applyMiddleware(...middlewares)) // 배포용
-      : composeWithDevTools(applyMiddleware(...middlewares)); // 개발용
+      ? compose(applyMiddleware(...middlewares))
+      : composeWithDevTools(applyMiddleware(...middlewares));
   const store = createStore(reducer, enhancer);
-  store.sagaTask = sagaMiddlewares.run(rootSaga);
+  store.sagaTask = sagaMiddleware.run(rootSaga);
   return store;
 };
 

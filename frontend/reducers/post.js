@@ -8,7 +8,7 @@ export const initialState = {
       id: 1,
       User: {
         id: 1,
-        nickname: "제로초",
+        nickname: "17소프트",
       },
       content: "#게시글",
       Images: [
@@ -32,7 +32,7 @@ export const initialState = {
             id: shortId.generate(),
             nickname: "nero",
           },
-          content: "우와 개정판이 나왔군요~",
+          content: "안녕하세요",
         },
         {
           id: shortId.generate(),
@@ -46,10 +46,10 @@ export const initialState = {
     },
   ],
   imagePaths: [],
-  hasMorePost: true, // 데이터가 0개(초기) 일때 무조건 데이터를 가져올 수 있게 하기 위해서 true로 설정함
-  loadPostLoading: false,
-  loadPostDone: false,
-  loadPostError: null,
+  hasMorePosts: true, // 데이터가 0개(초기) 일때 무조건 데이터를 가져올 수 있게 하기 위해서 true로 설정함
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
 
   addPostLoading: false,
   addPostDone: false,
@@ -91,9 +91,11 @@ export const generateDummyPost = (number) =>
       ],
     }));
 
-export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
-export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
-export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
+initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost());
+
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -122,7 +124,7 @@ const dummyPost = (data) => ({
   content: data.content,
   User: {
     id: 1,
-    nickname: "제로초",
+    nickname: "17오리",
   },
   Images: [],
   Comments: [],
@@ -133,7 +135,7 @@ const dummyComment = (data) => ({
   content: data,
   User: {
     id: 1,
-    nickname: "제로초",
+    nickname: "17오리",
   },
 });
 // reducer -> 이전 상태를 action을 통해 다음 상태로 만들어내는 함수. (단, 불변성은 지키면서!)
@@ -158,20 +160,20 @@ const reducer = (state = initialState, action) =>
         draft.loadPostsError = action.error;
         break;
       */
-      case LOAD_POST_REQUEST:
-        draft.loadPostLoading = true;
-        draft.loadPostDone = false;
-        draft.loadPostError = null;
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
         break;
-      case LOAD_POST_SUCCESS:
-        draft.loadPostLoading = false;
-        draft.loadPostDone = true;
+      case LOAD_POSTS_SUCCESS:
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
         draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePost = draft.mainPosts.length < 50;
+        draft.hasMorePosts = draft.mainPosts.length < 50;
         break;
-      case LOAD_POST_FAILURE:
-        draft.loadPostLoading = false;
-        draft.loadPostError = action.error;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
         break;
 
       case ADD_POST_REQUEST:
@@ -211,9 +213,7 @@ const reducer = (state = initialState, action) =>
         break;
       case ADD_COMMENT_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-        // find 함수를 이용하여 댓글을 쓰고자 하는 게시글을 찾아 post 변수에 저장함.
         post.Comments.unshift(dummyComment(action.data.content));
-        // unshift 함수를 이용하여 댓글 배열에 추가.
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

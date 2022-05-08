@@ -15,6 +15,11 @@ import PropTypes from "prop-types";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import { REMOVE_POST_REQUEST } from "../reducers/post";
+import styled from "styled-components";
+
+const StyledCard = styled(Card)``;
+
+const StyledDiv = styled.div``;
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -39,7 +44,7 @@ const PostCard = ({ post }) => {
   // me?.id => optional chaning 연산자. me.id가 있으면 들어가고 없으면 Undefined.
   return (
     <div style={{ marginBottom: 20 }}>
-      <Card
+      <StyledCard
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
           <RetweetOutlined key="retweet" />,
@@ -84,12 +89,12 @@ const PostCard = ({ post }) => {
           title={post.User.nickname}
           description={<PostCardContent postData={post.content} />}
         />
-      </Card>
+      </StyledCard>
       {commentFormOpened && (
-        <div>
+        <StyledDiv>
           <CommentForm post={post} />
           <List
-            header={`${post.Comments.length}개의 댓글`}
+            header={`${post.Comments ? post.Comments.length : 0} 댓글`}
             itemLayout="horizontal"
             dataSource={post.Comments}
             renderItem={(item) => (
@@ -102,7 +107,7 @@ const PostCard = ({ post }) => {
               </li>
             )}
           />
-        </div>
+        </StyledDiv>
       )}
     </div>
   );

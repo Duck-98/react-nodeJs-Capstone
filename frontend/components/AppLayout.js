@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { MdEmojiPeople } from "react-icons/md";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
 import { useSelector } from "react-redux";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 const Global = createGlobalStyle`
 
@@ -19,6 +20,7 @@ const Global = createGlobalStyle`
 .ant-col: last-child{
   padding-right: 0 !important;
 }
+
 `;
 
 const AppLayout = ({ children }) => {
@@ -26,15 +28,17 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Global />
-      <Menu mode="horizontal">
+      <Menu mode="horizontal" theme="dark">
         <Menu.Item>
           <Link href="/">
-            <a>Taxi-Pod</a>
+            <a style={{ color: "#fff" }}>
+              TAXI_POD <MdEmojiPeople style={{ verticalAlign: "middle" }} />
+            </a>
           </Link>
         </Menu.Item>
         <Menu.Item>
           <Link href="/profile">
-            <a>내 프로필</a>
+            <a style={{ color: "#fff" }}>내 프로필</a>
           </Link>
         </Menu.Item>
         <Menu.Item>
@@ -42,7 +46,7 @@ const AppLayout = ({ children }) => {
         </Menu.Item>
         <Menu.Item>
           <Link href="/signup">
-            <a>회원가입</a>
+            <a style={{ color: "#fff" }}>회원가입</a>
           </Link>
         </Menu.Item>
       </Menu>

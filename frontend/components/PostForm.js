@@ -2,7 +2,6 @@ import { Form, Input, Button } from "antd";
 import react, { useCallback, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useInput from "../hooks/useInput";
-import { addPost } from "../reducers/post";
 import { ADD_POST_REQUEST } from "../reducers/post";
 const PostForm = () => {
   const { imagePaths, addPostDone } = useSelector((state) => state.post);

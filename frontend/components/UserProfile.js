@@ -2,7 +2,10 @@ import React, { useCallback } from "react";
 import { Avatar, Card, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutRequestAction } from "../reducers/user";
+import styled from "styled-components";
 
+const StyledCard = styled(Card)``;
+/* style={{ backgroundColor:  "#001529" }}*/
 const UserProfile = () => {
   const dispatch = useDispatch();
   const { me, logOutLoading } = useSelector((state) => state.user);
@@ -10,7 +13,7 @@ const UserProfile = () => {
     dispatch(logoutRequestAction());
   }, []);
   return (
-    <Card
+    <StyledCard
       actions={[
         <div key="post">
           게시물
@@ -33,7 +36,7 @@ const UserProfile = () => {
       <Button onClick={onLogOut} loading={logOutLoading}>
         로그아웃
       </Button>
-    </Card>
+    </StyledCard>
   );
 };
 
