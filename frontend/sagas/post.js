@@ -19,6 +19,10 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_SUCCESS,
   REMOVE_POST_REQUEST,
+  LOAD_POST_REQUEST,
+  LOAD_POST_FAILURE,
+  LOAD_POST_SUCCESS,
+  generateDummyPost,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 import shortId from "shortid";
@@ -47,6 +51,28 @@ function* addPost(action) {
     console.error(err);
     yield put({
       type: ADD_POST_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function loadPostAPI(data) {
+  return axios.post("/api/posts", data);
+}
+
+function* loadPost(action) {
+  try {
+    // const result = yield call(addPostAPI, action.data);
+    yield delay(1000);
+    const id = shortId.generate();
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: generateDummyPost(10),
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_POST_FAILURE,
       data: err.response.data,
     });
   }
@@ -100,6 +126,10 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
@@ -109,5 +139,10 @@ function* watchAddComment() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchRemovePost), fork(watchAddComment)]);
+  yield all([
+    fork(watchAddPost),
+    fork(watchRemovePost),
+    fork(watchAddComment),
+    fork(watchLoadPost),
+  ]);
 }

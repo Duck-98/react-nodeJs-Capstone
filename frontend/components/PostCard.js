@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import ButtonGroup from "antd/lib/button/button-group";
 import PostImages from "./PostImages";
+import FollowButton from "./Followbutton";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import CommentForm from "./CommentForm";
@@ -76,6 +77,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        extra={<FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}

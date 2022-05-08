@@ -46,6 +46,11 @@ export const initialState = {
     },
   ],
   imagePaths: [],
+  hasMorePost: true, // 데이터가 0개(초기) 일때 무조건 데이터를 가져올 수 있게 하기 위해서 true로 설정함
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
+
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -60,7 +65,7 @@ export const initialState = {
 };
 //concat() 메서드는 인자로 주어진 배열이나 값들을 기존 배열에 합쳐서 새 배열을 반환합니다.
 
-initialState.mainPosts = initialState.mainPosts.concat(
+export const generateDummyPost = (number) =>
   Array(20)
     .fill()
     .map(() => ({
@@ -84,8 +89,11 @@ initialState.mainPosts = initialState.mainPosts.concat(
           content: faker.lorem.sentence(),
         },
       ],
-    })),
-);
+    }));
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -150,6 +158,22 @@ const reducer = (state = initialState, action) =>
         draft.loadPostsError = action.error;
         break;
       */
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePost = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
+        break;
+
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
