@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8mb4_general_ci", // 한글 저장
     },
   );
-  Comment.associate = (db) => {};
+  Comment.associate = (db) => {
+    db.Comment.belongsTo(db.User); // 유저가 여러 포스트를 갖을 수 있다. 1:N
+    db.Comment.belongsTo(db.Post);
+  };
   return Comment;
 };
