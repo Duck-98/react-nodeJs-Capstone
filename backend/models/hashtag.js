@@ -1,0 +1,17 @@
+module.exports = (sequelize, DataTypes) => {
+  const Hashtag = sequelize.define(
+    "Hashtag", // id가 기본적으로 들어가있기 때문에 만들지 않아도 됨.
+    {
+      name: {
+        type: DataTypes.STRING(20),
+        allowNull: false, //필수},
+      },
+    },
+    {
+      charset: "utf8mb4",
+      collate: "utf8mb4_general_ci", // 한글 저장
+    },
+  );
+  Hashtag.associate = (db) => {};
+  return Hashtag;
+};
