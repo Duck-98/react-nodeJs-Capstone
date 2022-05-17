@@ -20,7 +20,7 @@ Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
-});
+}); // 반복문을 이용하여 각 데이터베이스의 관계를 설정해줌.
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
