@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
 const db = require("./models");
@@ -19,6 +20,12 @@ app.patch 부분 수정
 app.options 찔러보기(?) ex) 요청이 가능한지  
 app.head 헤더만 가져오기 
 */
+app.use(
+  cors({
+    origin: true,
+    credentials: false,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // req -> 요청 res -> 응답
