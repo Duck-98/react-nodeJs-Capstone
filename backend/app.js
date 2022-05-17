@@ -1,5 +1,14 @@
 const express = require("express");
 const postRouter = require("./routes/post");
+const db = require("./models");
+const app = express();
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("db연결성공");
+  })
+  .catch(console.error);
+
 /* 
 app.get 가져오기
 app.post 생성하기
@@ -9,7 +18,7 @@ app.patch 부분 수정
 app.options 찔러보기(?) ex) 요청이 가능한지  
 app.head 헤더만 가져오기 
 */
-const app = express();
+
 // req -> 요청 res -> 응답
 app.get("/", (req, res) => {
   res.send("hello express");
