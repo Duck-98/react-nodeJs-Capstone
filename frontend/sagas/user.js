@@ -19,32 +19,12 @@ import {
 } from "../reducers/user";
 
 function logInAPI(data) {
-  return axios.post("/api/login", data);
+  return axios.post("/user/login", data);
 }
 
-/*function* logIn(action) {
-  try {
-    console.log("saga logIn");
-    // const result = yield call(logInAPI);
-    yield delay(1000);
-    yield put({
-      type: LOG_IN_SUCCESS,
-      data: action.data,
-    });
-  } catch (err) {
-    console.error(err);
-    yield put({
-      type: LOG_IN_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-*/
 function* logIn(action) {
   try {
-    console.log("saga logIn");
-    // const result = yield call(logInAPI);
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
       data: action.data,
@@ -58,7 +38,7 @@ function* logIn(action) {
   }
 }
 function logOutAPI() {
-  return axios.post("/api/logout");
+  return axios.post("/logout");
 }
 
 function* logOut() {
@@ -115,7 +95,7 @@ function* unfollow(action) {
 }
 
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data); // data -> email,password,nickname을 갖고있는 객체
+  return axios.post("/user", data); // data -> email,password,nickname을 갖고있는 객체
 }
 
 function* signUp(action) {
