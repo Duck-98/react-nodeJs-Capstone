@@ -9,7 +9,6 @@ module.exports = () => {
     try {
       const user = await User.findOne({
         where: { id },
-        include: [{ model: Post }],
       });
       done(null, user); //
     } catch (error) {

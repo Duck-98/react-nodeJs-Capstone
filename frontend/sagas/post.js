@@ -49,7 +49,13 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post("/post", { content: data });
+  return axios.post(
+    "/post",
+    { content: data },
+    {
+      withCredentials: true,
+    },
+  );
 }
 // req.body.content에 data를 넣기 위해서 위와 같이 코드를 만듬.
 function* addPost(action) {
@@ -74,7 +80,9 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-  return axios.delete("/api/post", data);
+  return axios.delete("/api/post", data, {
+    withCredentials: true,
+  });
 }
 
 function* removePost(action) {
@@ -99,7 +107,9 @@ function* removePost(action) {
 }
 
 function addCommentAPI(data) {
-  return axios.post(`/post/${data.postId}/comment`, data);
+  return axios.post(`/post/${data.postId}/comment`, data, {
+    withCredentials: true, // cookie를 요청에 포함시켜주겠다.
+  });
 }
 
 function* addComment(action) {

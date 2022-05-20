@@ -5,6 +5,40 @@ const { User, Post } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 
+router.get("/", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        exclude: ["password"], // 전체 데이터에서 비밀번호만 제외하고 다 가져오겠다.
+        include: [
+          {
+            model: Post,
+            attributes: ["id"],
+          },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id"],
+          },
+          {
+            model: User,
+            as: "Followers",
+            attributes: ["id"],
+          },
+        ],
+      });
+      // user가 로그인 되어있어야 req.user.id를 불러올 수 있기 때문에 if문을 이용하여 데이터가 있을 때만 user를 front에 보내주게 해줌.
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/login", (req, res, next) => {
   // middleware를 확장시키는 문법
   passport.authenticate("local", (err, user, info) => {
@@ -72,6 +106,7 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
     next(error);
   }
 }); //post /user/
+
 router.post("/user/logout", isLoggedIn, (req, res, next) => {
   req.logout();
   req.session.destroy();

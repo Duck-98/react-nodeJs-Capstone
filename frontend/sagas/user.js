@@ -16,6 +16,9 @@ import {
   UNFOLLOW_FAILURE,
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
+  LOAD_MY_INFO_FAILURE,
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
 } from "../reducers/user";
 
 function logInAPI(data) {
@@ -38,7 +41,7 @@ function* logIn(action) {
   }
 }
 function logOutAPI() {
-  return axios.post("/logout");
+  return axios.post("/user/logout");
 }
 
 function* logOut() {
@@ -93,6 +96,26 @@ function* unfollow(action) {
   }
 }
 
+function loadMyInfoAPI() {
+  return axios.get("/user");
+}
+
+function* loadMyInfo() {
+  try {
+    const result = yield call(loadMyInfoAPI);
+    yield put({
+      type: LOAD_MY_INFO_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function signUpAPI(data) {
   return axios.post("/user", data); // data -> email,password,nickname을 갖고있는 객체
 }
@@ -138,6 +161,9 @@ function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
 
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
 export default function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -145,5 +171,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchFollow),
     fork(watchUnFollow),
+    fork(watchLoadMyInfo),
+    /* fork(watchLoadUser),*/
   ]);
 }

@@ -1,6 +1,6 @@
 const express = require("express");
-const { Post } = require("../models");
-const { isLoggedIn, isNotLoggedIn } = require("../routes/middlewares");
+const { Post, Image, Comment } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 // async await은 next를 사용해줘야함.
 /* 게시글 작성 API */
@@ -11,7 +11,19 @@ router.post("/", isLoggedIn, async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
-    res.status(201).json(post); // front로 보내주기.
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [
+        // 게시글에 달린 이미지와 댓글을 포함해서 가져오기.
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+        },
+      ],
+    });
+    res.status(201).json(fullPost); // front로 보내주기.
   } catch (error) {
     console.error(error);
     next(error);

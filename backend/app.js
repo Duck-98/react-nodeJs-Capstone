@@ -25,7 +25,7 @@ passportConfig();
 app.use(
   cors({
     origin: "http://localhost:3000",
-    credentials: true,
+    credentials: true, // cookie도 같이 전달
   }),
 );
 /* 

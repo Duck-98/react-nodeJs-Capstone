@@ -4,7 +4,7 @@ import postSaga from "./post";
 import userSaga from "./user";
 
 axios.defaults.baseURL = "http://localhost:3065";
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true; // cookie 전달 true
 
 export default function* rootSaga() {
   yield all([fork(postSaga), fork(userSaga)]);
