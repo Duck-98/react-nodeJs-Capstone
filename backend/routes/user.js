@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { User, Post } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 
 router.post("/login", (req, res, next) => {
@@ -48,7 +49,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   // async await을 이용하여 비동기 문제 해결
   try {
     const exUser = await User.findOne({
@@ -71,7 +72,7 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 }); //post /user/
-router.post("/user/logout", (req, res, next) => {
+router.post("/user/logout", isLoggedIn, (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.send("ok");

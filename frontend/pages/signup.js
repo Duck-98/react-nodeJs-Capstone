@@ -16,19 +16,16 @@ const SignUp = () => {
   const { signUpLoading, signUpDone, signUpError, me } = useSelector(
     (state) => state.user,
   );
-  /*
+
   useEffect(() => {
-    if (!(me && me.id)) {
+    if (me && me.id) {
       Router.replace("/");
     }
   }, [me && me.id]);
-  if (!me) {
-    return null;
-  }
-*/
+
   useEffect(() => {
     if (signUpDone) {
-      Router.push("/");
+      Router.replace("/");
     }
   }, [signUpDone]); // 회원가입이 완료되면 메인홈페이지로 이동
   useEffect(() => {
