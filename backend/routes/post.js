@@ -1,5 +1,5 @@
 const express = require("express");
-const { Post, Image, Comment } = require("../models");
+const { Post, Image, Comment, User } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 // async await은 next를 사용해줘야함.
@@ -14,12 +14,21 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
-        // 게시글에 달린 이미지와 댓글을 포함해서 가져오기.
         {
           model: Image,
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User, // 댓글 작성자
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: User, // 게시글 작성자
+          attributes: ["id", "nickname"],
         },
       ],
     });
@@ -41,12 +50,22 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
     if (!post) {
       return res.status(403).send("존재하지 않는 게시글입니다.");
     }
-    const comment = await Post.create({
+    const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId, // PostId는 파라미터 값이기 때문에 params
+      PostId: parseInt(req.params.postId, 10), // PostId는 파라미터 값이기 때문에 params
       UserId: req.user.id,
     });
-    res.status(201).json(comment); // front로 보내주기.
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+
+    res.status(201).json(fullComment); // front로 보내주기.
   } catch (error) {
     console.error(error);
     next(error);
