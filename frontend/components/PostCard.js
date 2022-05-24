@@ -14,7 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
-import { REMOVE_POST_REQUEST } from "../reducers/post";
+import {
+  REMOVE_POST_REQUEST,
+  LIKE_POST_REQUEST,
+  UNLIKE_POST_REQUEST,
+} from "../reducers/post";
 import styled from "styled-components";
 
 const StyledCard = styled(Card)``;
@@ -24,10 +28,18 @@ const StyledDiv = styled.div``;
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { removePostLoading } = useSelector((state) => state.post); // 로딩창
-  const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const onToggleLike = useCallback(() => {
-    setLiked((prev) => !prev);
+  const onLike = useCallback(() => {
+    dispatch({
+      type: LIKE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
+  const onUnLike = useCallback(() => {
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+      data: post.id,
+    });
   }, []);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
@@ -42,6 +54,7 @@ const PostCard = ({ post }) => {
 
   const id = useSelector((state) => state.user.me?.id);
   // me?.id => optional chaning 연산자. me.id가 있으면 들어가고 없으면 Undefined.
+  const liked = post.Likers.find((v) => v.id === id);
   return (
     <div style={{ marginBottom: 20 }}>
       <StyledCard
@@ -49,13 +62,9 @@ const PostCard = ({ post }) => {
         actions={[
           <RetweetOutlined key="retweet" />,
           liked ? (
-            <HeartTwoTone
-              twoToneColor="red"
-              key="heart"
-              onClick={onToggleLike}
-            />
+            <HeartTwoTone twoToneColor="red" key="heart" onClick={onUnLike} />
           ) : (
-            <HeartOutlined key="heart" onClick={onToggleLike} />
+            <HeartOutlined key="heart" onClick={onLike} />
           ),
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
@@ -122,6 +131,7 @@ PostCard.propTypes = {
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
+    Likers: PropTypes.arrayOf(PropTypes.any),
   }).isRequired,
 };
 

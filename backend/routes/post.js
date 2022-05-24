@@ -30,6 +30,11 @@ router.post("/", isLoggedIn, async (req, res, next) => {
           model: User, // 게시글 작성자
           attributes: ["id", "nickname"],
         },
+        {
+          model: User, // 좋아요 누른사람
+          as: "Likers",
+          attributes: ["id"],
+        },
       ],
     });
     res.status(201).json(fullPost); // front로 보내주기.
@@ -71,6 +76,37 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+/*  게시물 좋아요 api */
+router.patch("/:postId/like", async (req, res, next) => {
+  //Patch /post/1/like
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } }); //  좋아요할 post id 찾기
+    if (!post) {
+      return res.status(403).send("게시물이 존재하지 않습니다.");
+    }
+    await post.addLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+/*  게시물 좋아요 취소 api */
+router.delete("/:postId/like", async (req, res, next) => {
+  //Delete /post/1/like
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } }); //  좋아요할 post id 찾기
+    if (!post) {
+      return res.status(403).send("게시물이 존재하지 않습니다.");
+    }
+    await post.removeLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.delete("/", (req, res) => {
   res.json({ id: 1, content: "hello" });
 });

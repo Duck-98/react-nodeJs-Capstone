@@ -1,5 +1,4 @@
 import axios from "axios";
-import shortId from "shortid";
 import {
   all,
   delay,
@@ -23,6 +22,12 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  LIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -59,7 +64,6 @@ function addPostAPI(data) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    const id = shortId.generate();
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
@@ -104,6 +108,46 @@ function* removePost(action) {
   }
 }
 
+function likePostAPI(data) {
+  return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function unlikePostAPI(data) {
+  return axios.delete(`/post/${data}/like`);
+}
+
+function* unlikePost(action) {
+  try {
+    const result = yield call(unlikePostAPI, action.data);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function addCommentAPI(data) {
   return axios.post(`/post/${data.postId}/comment`, data, {
     withCredentials: true, // cookie를 요청에 포함시켜주겠다.
@@ -134,6 +178,14 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+
 function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
@@ -148,5 +200,7 @@ export default function* postSaga() {
     fork(watchLoadPosts),
     fork(watchRemovePost),
     fork(watchAddComment),
+    fork(watchUnlikePost),
+    fork(watchLikePost),
   ]);
 }

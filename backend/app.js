@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-//const morgan = require('morgan');
 //const path = require('path');
 
 const postRouter = require("./routes/post");
@@ -57,9 +56,6 @@ app.get("/", (req, res) => {
   res.send("hello express");
 });
 
-app.get("/", (req, res) => {
-  res.send("hello api");
-});
 app.use("/posts", postsRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
