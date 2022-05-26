@@ -77,7 +77,7 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   }
 });
 /*  게시물 좋아요 api */
-router.patch("/:postId/like", async (req, res, next) => {
+router.patch("/:postId/like", isLoggedIn, async (req, res, next) => {
   //Patch /post/1/like
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } }); //  좋아요할 post id 찾기
@@ -92,7 +92,7 @@ router.patch("/:postId/like", async (req, res, next) => {
   }
 });
 /*  게시물 좋아요 취소 api */
-router.delete("/:postId/like", async (req, res, next) => {
+router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
   //Delete /post/1/like
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } }); //  좋아요할 post id 찾기
@@ -107,8 +107,18 @@ router.delete("/:postId/like", async (req, res, next) => {
   }
 });
 
-router.delete("/", (req, res) => {
-  res.json({ id: 1, content: "hello" });
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+  // Delete /post/10
+  try {
+    await Post.destroy({
+      where: { id: req.params.postId },
+      UserId: req.user.id, // UserId 가 일치하는 사람만 지울 수 있게
+    });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 module.exports = router;

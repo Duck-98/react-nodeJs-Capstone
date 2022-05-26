@@ -11,7 +11,7 @@ const Home = () => {
     (state) => state.post,
   );
   const dispatch = useDispatch();
-
+  console.log(mainPosts);
   useEffect(() => {
     dispatch({
       type: LOAD_MY_INFO_REQUEST,
@@ -27,8 +27,10 @@ const Home = () => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePosts && !loadPostLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
