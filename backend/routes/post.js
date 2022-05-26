@@ -1,7 +1,18 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
 const { Post, Image, Comment, User } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
+try {
+  fs.accessSync("uploads");
+} catch (error) {
+  console.log("upload폴더가 없으므로 생성합니다.");
+  fs.mkdirSync("uploads");
+}
+
 // async await은 next를 사용해줘야함.
 /* 게시글 작성 API */
 router.post("/", isLoggedIn, async (req, res, next) => {
@@ -120,5 +131,31 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+/* image upload api */
+const upload = multer({
+  storage: multer.diskStorage({
+    // diskStorage => 하드디스크
+    destination(req, file, done) {
+      done(null, "uploads");
+    },
+    filename(req, file, done) {
+      // 제로초.png
+      const ext = path.extname(file.originalname); // 확장자 추출(.png)
+      const basename = path.basename(file.originalname, ext); //
+      done(null, basename + new Date().getTime() + ext); // 이름 + 시간 + 확장자 ex) file1412321.jpg
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20mb
+});
+router.post(
+  "/images",
+  isLoggedIn,
+  upload.array("image"),
+  async (req, res, next) => {
+    //post post/images  array를 사용한 이유 -> 이미지를 여러 장 올리기 위해서.
+    console.log(req.files);
+    res.json(req.files.map((v) => v.filename));
+  },
+);
 
 module.exports = router;
