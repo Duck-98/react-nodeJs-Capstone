@@ -56,6 +56,8 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const REMOVE_IMAGE = "REMOVE_IMAGE";
+
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
   data,
@@ -71,30 +73,16 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-      /*
-      case LOAD_POSTS_REQUEST:
-        draft.loadPostsLoading = true;
-        draft.loadPostsDone = false;
-        draft.loadPostsError = null;
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;
-      case LOAD_POSTS_SUCCESS:
-        draft.loadPostsLoading = false;
-        draft.loadPostsDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePosts = draft.mainPosts.length < 50;
-        break;
-      case LOAD_POSTS_FAILURE:
-        draft.loadPostsLoading = false;
-        draft.loadPostsError = action.error;
-        break;
-      */
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
         draft.uploadImagesError = null;
         break;
       case UPLOAD_IMAGES_SUCCESS: {
-        draft.imagePaths = action.data;
+        draft.imagePaths = action.data; // 이미지 경로에 데이터 저장.
         draft.uploadImagesLoading = false;
         draft.uploadImagesDone = true;
         break;
@@ -130,6 +118,7 @@ const reducer = (state = initialState, action) =>
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.data);
         //unshift() 메서드는 새로운 요소를 배열의 맨 앞쪽에 추가하고, 새로운 길이를 반환합니다.
+        draft.imagePaths = []; // 글을 올린 후 이미지 경로를 초기화 하여 새로운 이미지를 받을 수 있게 해줌.
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

@@ -12,16 +12,45 @@ try {
   console.log("upload폴더가 없으므로 생성합니다.");
   fs.mkdirSync("uploads");
 }
+const upload = multer({
+  storage: multer.diskStorage({
+    // diskStorage => 하드디스크
+    destination(req, file, done) {
+      done(null, "uploads");
+    },
+    filename(req, file, done) {
+      // 제로초.png
+      const ext = path.extname(file.originalname); // 확장자 추출(.png)
+      const basename = path.basename(file.originalname, ext); //
+      done(null, basename + "_" + new Date().getTime() + ext); // 이름 + 시간 + 확장자 ex) file1412321.jpg
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20mb
+});
 
 // async await은 next를 사용해줘야함.
 /* 게시글 작성 API */
-router.post("/", isLoggedIn, async (req, res, next) => {
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     // 로그인한 사람만 게시글을 작성할 수 있게 isLoggedIn 미들웨어를 사용해줌.
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        // image 여러개 올리면 image: [duck.png, item.jpg]
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image })),
+        );
+        await post.addImages(images);
+        // image 배열을 map 함수를 이용하여 Image 모델에 데이터를 넣어줌.
+      } else {
+        // 이미지 하나만 올리면 image : duck.png
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -132,21 +161,7 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   }
 });
 /* image upload api */
-const upload = multer({
-  storage: multer.diskStorage({
-    // diskStorage => 하드디스크
-    destination(req, file, done) {
-      done(null, "uploads");
-    },
-    filename(req, file, done) {
-      // 제로초.png
-      const ext = path.extname(file.originalname); // 확장자 추출(.png)
-      const basename = path.basename(file.originalname, ext); //
-      done(null, basename + new Date().getTime() + ext); // 이름 + 시간 + 확장자 ex) file1412321.jpg
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20mb
-});
+
 router.post(
   "/images",
   isLoggedIn,

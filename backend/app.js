@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const path = require("path");
 //const path = require('path');
 
 const postRouter = require("./routes/post");
@@ -39,6 +40,7 @@ app.patch 부분 수정
 app.options 찔러보기(?) ex) 요청이 가능한지  
 app.head 헤더만 가져오기 
 */
+app.use("/", express.static(path.join(__dirname, "uploads"))); // 경로 더해주기
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // req -> 요청 res -> 응답

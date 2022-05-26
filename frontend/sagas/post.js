@@ -55,13 +55,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post(
-    "/post",
-    { content: data },
-    {
-      withCredentials: true,
-    },
-  );
+  return axios.post("/post", data);
 }
 // req.body.content에 data를 넣기 위해서 위와 같이 코드를 만듬.
 function* addPost(action) {
