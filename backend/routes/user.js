@@ -130,4 +130,84 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.patch(`/:userId/follow`, isLoggedIn, async (req, res, next) => {
+  // patch /user/1/follow
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("팔로우 할 수 없습니다.");
+    }
+    user.addFollowers(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.delete(`/:userId/follow`, isLoggedIn, async (req, res, next) => {
+  // delete /user/1/follow
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("언팔로우 할 수 없습니다.");
+    }
+    user.removeFollowers(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+/* 팔로워 목록 불러오기 */
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+  // get /user/followers
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } }); // 사용자의 아이디(나의 아이디 찾기)
+    if (!user) {
+      res.status(403).send("팔로우 할 수 없습니다.");
+    }
+    const followers = await user.getFollowers();
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+/* 팔로잉 목록 불러오기 */
+router.get("/followings", isLoggedIn, async (req, res, next) => {
+  // get /user/followingss
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (!user) {
+      res.status(403).send("팔로우 할 수 없습니다.");
+    }
+    const followings = await user.getFollowings();
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+/* 
+req.params.id -> 내가 아닌 다른 사람
+req.user.id -> 나
+*/
+router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
+  // DELETE /user/follower/2
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("없는 사람을 차단하려고 하시네요?");
+    }
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;
