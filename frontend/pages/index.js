@@ -1,25 +1,20 @@
 import AppLayout from "../components/AppLayout";
+import { END } from "redux-saga";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { useEffect } from "react";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import wrapper from "../store/configureStore";
 const Home = () => {
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostLoading } = useSelector(
     (state) => state.post,
   );
   const dispatch = useDispatch();
-  console.log(mainPosts);
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
-  }, []);
+
   useEffect(() => {
     function onScroll() {
       if (
@@ -50,5 +45,25 @@ const Home = () => {
     </AppLayout>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : "";
+      axios.defaults.headers.Cookie = "";
+      if (req && cookie) {
+        // 서버에 쿠키가 있을 때만 포함됨.
+        axios.defaults.headers.Cookie = cookie;
+      }
+      store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+      store.dispatch({
+        type: LOAD_POSTS_REQUEST,
+      });
+      store.dispatch(END);
+      await store.sagaTask.toPromise();
+    },
+);
 
 export default Home;

@@ -31,6 +31,9 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -40,7 +43,7 @@ function loadPostsAPI(lastId) {
 // get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.lastId);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
@@ -49,6 +52,28 @@ function* loadPosts(action) {
     console.error(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function loadHashtagPostsAPI(data, lastId) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`,
+  );
+}
+// get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
+function* loadHashtagPosts(action) {
+  try {
+    const result = yield call(loadHashtagPostsAPI, action.lastId, action.data);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
       data: err.response.data,
     });
   }
@@ -213,7 +238,9 @@ function* watchAddComment() {
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
-
+function* watchLoadHashtagPost() {
+  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -223,5 +250,6 @@ export default function* postSaga() {
     fork(watchUnlikePost),
     fork(watchLikePost),
     fork(watchUploadImages),
+    fork(watchLoadHashtagPost),
   ]);
 }

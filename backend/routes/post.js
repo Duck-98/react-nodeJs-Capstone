@@ -31,9 +31,9 @@ const upload = multer({
 // async await은 next를 사용해줘야함.
 /* 게시글 작성 API */
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
+  // POST /post
   try {
-    const hashtags = req.body.content.match(/#[^\s#]+/g); //
-    // 로그인한 사람만 게시글을 작성할 수 있게 isLoggedIn 미들웨어를 사용해줌.
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
@@ -42,23 +42,21 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
       const result = await Promise.all(
         hashtags.map((tag) =>
           Hashtag.findOrCreate({
-            // findOrCreate - > 없을 때는 데이터베이스에 등록 , 없으면 데이터를 가져옴.
             where: { name: tag.slice(1).toLowerCase() },
           }),
-        ), //result = [[#test, true], [#test2, true]]
-      ); // result 배열에서 첫번째 #test만 추출해야하기때문에 v[0]dmf g해줌.
-      await post.addHashTags(result.map((v) => v[0]));
+        ),
+      ); // [[노드, true], [리액트, true]]
+      await post.addHashtags(result.map((v) => v[0]));
     }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
-        // image 여러개 올리면 image: [duck.png, item.jpg]
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
         const images = await Promise.all(
           req.body.image.map((image) => Image.create({ src: image })),
         );
         await post.addImages(images);
-        // image 배열을 map 함수를 이용하여 Image 모델에 데이터를 넣어줌.
       } else {
-        // 이미지 하나만 올리면 image : duck.png
+        // 이미지를 하나만 올리면 image: 제로초.png
         const image = await Image.create({ src: req.body.image });
         await post.addImages(image);
       }
@@ -83,18 +81,19 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
           attributes: ["id", "nickname"],
         },
         {
-          model: User, // 좋아요 누른사람
+          model: User, // 좋아요 누른 사람
           as: "Likers",
           attributes: ["id"],
         },
       ],
     });
-    res.status(201).json(fullPost); // front로 보내주기.
+    res.status(201).json(fullPost);
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
+
 /* 게시글 삭제 API */
 // 게시글 데이터는 대부분 json으로 표현함.
 
