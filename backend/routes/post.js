@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const { Post, Image, Comment, User } = require("../models");
+const { Post, Image, Comment, User, Hashtag } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const router = express.Router();
 try {
@@ -32,11 +32,23 @@ const upload = multer({
 /* 게시글 작성 API */
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g); //
     // 로그인한 사람만 게시글을 작성할 수 있게 isLoggedIn 미들웨어를 사용해줌.
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            // findOrCreate - > 없을 때는 데이터베이스에 등록 , 없으면 데이터를 가져옴.
+            where: { name: tag.slice(1).toLowerCase() },
+          }),
+        ), //result = [[#test, true], [#test2, true]]
+      ); // result 배열에서 첫번째 #test만 추출해야하기때문에 v[0]dmf g해줌.
+      await post.addHashTags(result.map((v) => v[0]));
+    }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         // image 여러개 올리면 image: [duck.png, item.jpg]

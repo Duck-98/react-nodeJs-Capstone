@@ -34,10 +34,10 @@ import {
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
-function loadPostsAPI(data) {
-  return axios.get("/posts", data);
+function loadPostsAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
-
+// get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
 function* loadPosts(action) {
   try {
     const result = yield call(loadPostsAPI, action.data);
@@ -79,18 +79,18 @@ function* addPost(action) {
 }
 
 function removePostAPI(data) {
-  return axios.delete("/api/post", data, {
+  return axios.delete(`/post/${data}`, data, {
     withCredentials: true,
   });
 }
 
 function* removePost(action) {
   try {
-    // const result = yield call(removePostAPI, action.data);
+    const result = yield call(removePostAPI, action.data);
     yield delay(1000);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,
