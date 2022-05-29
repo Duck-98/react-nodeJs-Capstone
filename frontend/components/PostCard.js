@@ -20,6 +20,10 @@ import {
   UNLIKE_POST_REQUEST,
 } from "../reducers/post";
 import styled from "styled-components";
+import moment from "moment";
+import "moment/locale/ko";
+
+moment.locale("ko");
 
 const StyledCard = styled(Card)``;
 
@@ -93,6 +97,9 @@ const PostCard = ({ post }) => {
         ]}
         extra={<FollowButton post={post} />}
       >
+        <div style={{ float: "right" }}>
+          {moment(post.createdAt).calendar()}
+        </div>
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}

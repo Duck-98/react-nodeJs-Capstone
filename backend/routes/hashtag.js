@@ -5,7 +5,7 @@ const { User, Hashtag, Image, Post } = require("../models");
 
 const router = express.Router();
 
-router.get("/:hashtag", async (req, res, next) => {
+router.get("/:tag", async (req, res, next) => {
   try {
     const where = {};
     if (parseInt(req.query.lastId, 10)) {
@@ -32,19 +32,6 @@ router.get("/:hashtag", async (req, res, next) => {
           through: "Like",
           as: "Likers",
           attributes: ["id"],
-        },
-        {
-          model: Post,
-          as: "Retweet",
-          include: [
-            {
-              model: User,
-              attributes: ["id", "nickname"],
-            },
-            {
-              model: Image,
-            },
-          ],
         },
       ],
     });

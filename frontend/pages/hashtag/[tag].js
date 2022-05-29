@@ -53,7 +53,7 @@ const Hashtag = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
-    async ({ req, res, ...etc }) => {
+    async ({ req, params }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
       if (req && cookie) {
@@ -64,11 +64,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       });
       store.dispatch({
         type: LOAD_HASHTAG_POSTS_REQUEST,
-        data: req.params.tag,
+        data: req.params?.tag,
       });
       store.dispatch(END);
       await store.sagaTask.toPromise();
-      return { props: {} };
     },
 );
 

@@ -65,6 +65,7 @@ function loadHashtagPostsAPI(data, lastId) {
 // get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
 function* loadHashtagPosts(action) {
   try {
+    console.log("loadHashtag console");
     const result = yield call(loadHashtagPostsAPI, action.lastId, action.data);
     yield put({
       type: LOAD_HASHTAG_POSTS_SUCCESS,
