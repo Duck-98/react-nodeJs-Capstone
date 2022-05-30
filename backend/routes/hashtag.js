@@ -44,19 +44,6 @@ router.get("/:hashtag", async (req, res, next) => {
           as: "Likers",
           attributes: ["id"],
         },
-        {
-          model: Post,
-          as: "Reshare",
-          include: [
-            {
-              model: User,
-              attributes: ["id", "nickname"],
-            },
-            {
-              model: Image,
-            },
-          ],
-        },
       ],
     });
     console.log(posts);

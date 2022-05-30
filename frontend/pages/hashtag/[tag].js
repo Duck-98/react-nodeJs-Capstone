@@ -59,7 +59,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
-
+      store.dispatch({
+        type: LOAD_HASHTAG_POSTS_REQUEST,
+        data: params.tag,
+      });
       store.dispatch(END);
       await store.sagaTask.toPromise();
     },

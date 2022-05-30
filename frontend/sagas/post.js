@@ -83,7 +83,9 @@ function* loadHashtagPosts(action) {
   }
 }
 function loadUserPostsAPI(data, lastId) {
-  return axios.get(`/user/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
+  return axios.get(
+    `/user/${encodeURIComponent(data)}/posts?lastId=${lastId || 0}`,
+  );
 }
 // get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
 function* loadUserPosts(action) {
