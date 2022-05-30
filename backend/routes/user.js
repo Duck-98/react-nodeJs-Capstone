@@ -163,6 +163,58 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+/* User 개인 포스트 불러오기 */
+router.get("/:userId/posts", async (req, res, next) => {
+  try {
+    // Get /user/1/posts
+    const where = { UserId: req.params.userId };
+    if (parseInt(req.query.lastId, 10)) {
+      //초기 로딩이 아닐때
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) }; // id가 lastId보다 작은 것으로 10개를 불러와라.
+    } // 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+    const posts = await Post.findAll({
+      //  where: { id: lastId },
+      where,
+      limit: 10,
+      //  offset: 10,
+      order: [
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
+      ],
+      // 최신 게시물 0~10개씩 가져오기
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    console.log(posts);
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+module.exports = router;
 
 /* 
 req.params.id -> 내가 아닌 다른 사람

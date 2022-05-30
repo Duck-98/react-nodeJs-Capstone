@@ -1,11 +1,12 @@
 const express = require("express");
 const { Op } = require("sequelize");
 
-const { User, Hashtag, Image, Post } = require("../models");
+const { Post, Hashtag, Image, Comment, User } = require("../models");
 
 const router = express.Router();
 
-router.get("/:tag", async (req, res, next) => {
+router.get("/:hashtag", async (req, res, next) => {
+  // GET /hashtag/노드
   try {
     const where = {};
     if (parseInt(req.query.lastId, 10)) {
@@ -15,10 +16,11 @@ router.get("/:tag", async (req, res, next) => {
     const posts = await Post.findAll({
       where,
       limit: 10,
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Hashtag,
-          where: { name: decodeURIComponent(req.params.tag) },
+          where: { name: decodeURIComponent(req.params.hashtag) },
         },
         {
           model: User,
@@ -28,17 +30,40 @@ router.get("/:tag", async (req, res, next) => {
           model: Image,
         },
         {
-          model: User,
-          through: "Like",
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+              order: [["createdAt", "DESC"]],
+            },
+          ],
+        },
+        {
+          model: User, // 좋아요 누른 사람
           as: "Likers",
           attributes: ["id"],
         },
+        {
+          model: Post,
+          as: "Reshare",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
       ],
     });
-    res.json(posts);
-  } catch (e) {
-    console.error(e);
-    next(e);
+    console.log(posts);
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 });
 

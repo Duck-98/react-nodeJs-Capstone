@@ -34,6 +34,9 @@ import {
   LOAD_HASHTAG_POSTS_SUCCESS,
   LOAD_HASHTAG_POSTS_FAILURE,
   LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -66,7 +69,7 @@ function loadHashtagPostsAPI(data, lastId) {
 function* loadHashtagPosts(action) {
   try {
     console.log("loadHashtag console");
-    const result = yield call(loadHashtagPostsAPI, action.lastId, action.data);
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
     yield put({
       type: LOAD_HASHTAG_POSTS_SUCCESS,
       data: result.data,
@@ -75,6 +78,26 @@ function* loadHashtagPosts(action) {
     console.error(err);
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+function loadUserPostsAPI(data, lastId) {
+  return axios.get(`/user/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
+}
+// get에서 data를 얻으려면 주소 뒤에 ?key=${key값}으로 입력해줘야함.
+function* loadUserPosts(action) {
+  try {
+    console.log("loadHashtag console");
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
       data: err.response.data,
     });
   }
@@ -242,6 +265,10 @@ function* watchUploadImages() {
 function* watchLoadHashtagPost() {
   yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
+
+function* watchLoadUserPost() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -252,5 +279,6 @@ export default function* postSaga() {
     fork(watchLikePost),
     fork(watchUploadImages),
     fork(watchLoadHashtagPost),
+    fork(watchLoadUserPost),
   ]);
 }
