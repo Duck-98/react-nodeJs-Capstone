@@ -68,7 +68,7 @@ const PostForm = () => {
         value={text}
         onChange={onChangeText}
         maxLength={140}
-        placeholder="택시를 같이 탈 사람을 구해보세요!"
+        placeholder="택시를 같이 탈 사람을 구해보세요!&#13;&#10; ex) #천안역 천안역에서 오후 1시에 택시 탈 사람 구합니다~ "
       />
       <div>
         <input

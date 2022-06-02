@@ -24,6 +24,11 @@ const Global = createGlobalStyle`
 }
 
 `;
+const Intro = styled.div`
+  background-color: #001529;
+  color: #fff;
+  font-size: 14px;
+`;
 
 const AppLayout = ({ children }) => {
   const [searchInput, onChangeSearchInput] = useInput("");
@@ -71,13 +76,18 @@ const AppLayout = ({ children }) => {
           {children}
         </Col>
         <Col xs={24} md={6}>
-          <a
-            href="https://github.com/Duck-98"
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            Made by Duck
-          </a>
+          <Intro>
+            <a
+              href="https://github.com/Duck-98"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              Made by 나덕경
+            </a>{" "}
+            <br />
+            https://github.com/Duck-98 <br />
+            godqhr2256@gmail.com
+          </Intro>
         </Col>
       </Row>
     </div>
