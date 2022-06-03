@@ -198,31 +198,31 @@ const reducer = (state = initialState, action) =>
         draft.unfollowLoading = false;
         draft.unfollowError = action.error;
         break;
-      case LOG_IN_REQUEST:
+      case LOG_IN_REQUEST: // 로그인 중
         draft.logInLoading = true;
         draft.logInError = null;
         draft.logInDone = false;
         break;
-      case LOG_IN_SUCCESS:
+      case LOG_IN_SUCCESS:// 로그인 성공 시
         draft.logInLoading = false;
         draft.me = action.data;
         draft.logInDone = true;
         break;
-      case LOG_IN_FAILURE:
+      case LOG_IN_FAILURE: // 로그인 실패 시
         draft.logInLoading = false;
         draft.logInError = action.error;
         break;
-      case LOG_OUT_REQUEST:
+      case LOG_OUT_REQUEST: // 로그아웃 중
         draft.logOutLoading = true;
         draft.logOutError = null;
         draft.logOutDone = false;
         break;
-      case LOG_OUT_SUCCESS:
+      case LOG_OUT_SUCCESS: // 로그아웃 성공 시
         draft.logOutLoading = false;
         draft.logOutDone = true;
         draft.me = null;
         break;
-      case LOG_OUT_FAILURE:
+      case LOG_OUT_FAILURE: // 로그아웃 실패 시
         draft.logOutLoading = false;
         draft.logOutError = action.error;
         break;

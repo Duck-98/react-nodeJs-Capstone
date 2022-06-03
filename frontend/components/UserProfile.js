@@ -10,7 +10,8 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const { me, logOutLoading } = useSelector((state) => state.user);
   const onLogOut = useCallback(() => {
-    dispatch(logoutRequestAction());
+    dispatch(logoutRequestAction()); 
+    // 로그아웃 버튼 눌렀을 때 로그아웃 액션 실행
   }, []);
   return (
     <StyledCard
@@ -34,7 +35,7 @@ const UserProfile = () => {
         title={me.nickname}
       />
       <Button onClick={onLogOut} loading={logOutLoading}>
-        로그아웃
+        로그아웃 
       </Button>
     </StyledCard>
   );

@@ -219,7 +219,8 @@ function* addComment(action) {
 }
 
 function uploadImagesAPI(data) {
-  return axios.post("/post/images", data); // formData는 json 형식으로 전송되면 안되기 때문에 data로 코딩함.
+  return axios.post("/post/images", data); 
+  // formData는 json 형식으로 전송되면 안되기 때문에 data로 코딩함.
 }
 
 function* uploadImages(action) {

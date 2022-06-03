@@ -100,7 +100,7 @@ const reducer = (state = initialState, action) =>
     switch (action.type) {
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
-        break;
+        break; // action data(삭제하려고 하는 데이터)와 imagePath에 있는 데이터가 같으면 filter 함수로 제거
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
@@ -108,6 +108,7 @@ const reducer = (state = initialState, action) =>
         break;
       case UPLOAD_IMAGES_SUCCESS: {
         draft.imagePaths = draft.imagePaths.concat(action.data);
+        //concat 함수를 이용하여 imagePaths 배열에 action.data(이미지 데이터)를 합치기
         draft.uploadImagesLoading = false;
         draft.uploadImagesDone = true;
         break;
@@ -192,6 +193,7 @@ const reducer = (state = initialState, action) =>
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.data);
+        //mainPosts배열에 action.data(게시물 데이터)를 배열 앞에 추가
         draft.imagePaths = [];
         break;
       case ADD_POST_FAILURE:

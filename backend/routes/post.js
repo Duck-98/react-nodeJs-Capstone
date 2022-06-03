@@ -34,35 +34,38 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   // POST /post
   try {
     const hashtags = req.body.content.match(/#[^\s#]+/g);
+    // 해시태그 정규표현식
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
-    if (hashtags) {
+    // Post 데이터베이스에 데이터 추가하기
+    if (hashtags) { // 만약 해쉬태그로 입력했다면
       const result = await Promise.all(
         hashtags.map((tag) =>
           Hashtag.findOrCreate({
             where: { name: tag.slice(1).toLowerCase() },
           }),
-        ),
-      ); // [[노드, true], [리액트, true]]
+        ), // Hashtag 데이터베이스에도 추가하기
+      ); 
       await post.addHashtags(result.map((v) => v[0]));
     }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
-        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        // 이미지를 여러 개 올리면 image: [덕.png, 오리.png]
         const images = await Promise.all(
           req.body.image.map((image) => Image.create({ src: image })),
         );
         await post.addImages(images);
       } else {
-        // 이미지를 하나만 올리면 image: 제로초.png
+        // 이미지를 하나만 올리면 image: 덕.png
         const image = await Image.create({ src: req.body.image });
         await post.addImages(image);
       }
     }
     const fullPost = await Post.findOne({
       where: { id: post.id },
+      //  
       include: [
         {
           model: Image,
@@ -86,8 +89,9 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
           attributes: ["id"],
         },
       ],
-    });
+    }); 
     res.status(201).json(fullPost);
+    // front에 fullpost 데이터 전송
   } catch (error) {
     console.error(error);
     next(error);

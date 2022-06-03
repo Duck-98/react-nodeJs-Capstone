@@ -22,13 +22,16 @@ const PostForm = () => {
   const onSubmitForm = useCallback(() => {
     if (!text || !text.trim()) {
       // trim -> 문자열 좌우 공백 삭제해주는 함수.
+      // text가 없으면 게시글 작성 알림띄우기
       return alert("게시글을 작성해주세요.");
     }
-    const formData = new FormData();
+    const formData = new FormData(); 
+     // 데이터 전송을 위해 formdata객체 생성
     imagePaths.forEach((p) => {
       formData.append("image", p);
-    });
+    }); // image 파일 정보를 서버로 전달
     formData.append("content", text);
+    // text 정보를 서버로 전달
     return dispatch({
       type: ADD_POST_REQUEST,
       data: formData,
@@ -53,7 +56,7 @@ const PostForm = () => {
   });
 
   const onRemoveImage = useCallback((index) => () => {
-    dispatch({
+    dispatch({ // 이미지 삭제
       type: REMOVE_IMAGE,
       data: index,
     });

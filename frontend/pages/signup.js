@@ -44,7 +44,7 @@ const SignUp = () => {
   const onChangePasswordCheck = useCallback((e) => {
     setPasswordCheck(e.target.value);
     setPasswordError(e.target.value !== password);
-  }, []);
+  }, []);  // 비밀번호와 비밀번호 확인이 같지 않으면 틀림
 
   /*
   const [nick, setNick] = useState("");
@@ -81,11 +81,11 @@ const SignUp = () => {
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
+      // 비밀번호와 비밀번호 확인이 틀리면 에러 값 리턴
       return passwordError(true);
     }
-    console.log(password, nickname, email);
-    //e.preventDefault();
     dispatch({
+      // SIGN_UP_REQUEST 액션 
       type: SIGN_UP_REQUEST,
       data: { email, password, nickname },
     });

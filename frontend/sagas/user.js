@@ -38,36 +38,37 @@ import {
 
 function logInAPI(data) {
   return axios.post("/user/login", data);
+  // axios를 이용하여 로그인 요청 보내기
 }
 
 function* logIn(action) {
   try {
-    const result = yield call(logInAPI, action.data);
-    yield put({
+    const result = yield call(logInAPI, action.data);  
+    // result에 로그인 데이터 저장
+    yield put({ // 로그인 성공 시 LOG_IN_SUCCESS 액션 put
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
-    yield put({
+    yield put({ // 로그인 실패 시 LOG_IN_FAILURE 액션 put
       type: LOG_IN_FAILURE,
       error: err.response.data,
     });
   }
 }
 function logOutAPI() {
-  return axios.post("/user/logout", {
-    withCredentials: true,
-  });
+  return axios.post("/user/logout");
+     // axios를 이용하여 로그아웃 요청 보내기
 }
-
 function* logOut() {
-  try {
+  try { // 로그아웃 성공 시 LOG_OUT_SUCCESS 액션 put
     yield call(logOutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
   } catch (err) {
+    // 로그아웃 실패 시 LOG_OUT_FAILURE 액션 put
     console.error(err);
     yield put({
       type: LOG_OUT_FAILURE,
@@ -235,7 +236,9 @@ function* changeNickname(action) {
 }
 
 function signUpAPI(data) {
-  return axios.post("/user", data); // data -> email,password,nickname을 갖고있는 객체
+  return axios.post("/user", data);
+  // axios를 이용한 회원가입 요청
+  // data -> email,password,nickname을 갖고있는 객체
 }
 
 function* signUp(action) {

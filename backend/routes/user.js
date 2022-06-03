@@ -92,7 +92,8 @@ router.post("/login", (req, res, next) => {
       } // Error발생시
       const fullUserWithoutPassword = await User.findOne({
         where: { id: user.id },
-        exclude: ["password"], // 전체 데이터에서 비밀번호만 제외하고 다 가져오겠다.
+        exclude: ["password"], 
+        // 전체 데이터에서 비밀번호만 제외하고 다 가져오기
         include: [
           {
             model: Post,
@@ -110,8 +111,8 @@ router.post("/login", (req, res, next) => {
           },
         ],
       });
-
-      return res.status(200).json(fullUserWithoutPassword); // 사용자 정보를 프론트로 넘겨주기! 중요.
+      return res.status(200).json(fullUserWithoutPassword); 
+      // 사용자 정보를 프론트로 넘겨줌
       //user -> front) saga(action.data) / reducer(me) 데이터로 변환됨
     });
   })(req, res, next);

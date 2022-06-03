@@ -18,6 +18,7 @@ const FormWrapper = styled(Form)`
 const LoginForm = () => {
   const dispatch = useDispatch();
   const { logInLoading, logInError } = useSelector((state) => state.user);
+   // 로그인로딩 액션과 로그인 에러액션을 사용하기위해 만들어 놓은 액션을 가져옴
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
 
@@ -25,13 +26,13 @@ const LoginForm = () => {
     if (logInError) {
       alert(logInError);
     }
-  }, [logInError]);
+  }, [logInError]); 
+  //로그인 에러 발생 시 alert를 이용하여 에러 나타내기
 
   const onSubmitForm = useCallback(() => {
-    console.log(email, password);
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
-
+   // 로그인 버튼 눌렀을 때 리덕스 로그인액션에 메일과 비밀번호를 보냄. 
   return (
     <FormWrapper onFinish={onSubmitForm}>
       <div>
